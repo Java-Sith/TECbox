@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">TECBox</string>
+    <string name="et_hint_ipaddress">Digite la IP</string>
+    <string name="tb_ipaddress_ask">Digite la IP del servidor para acceder a su cuenta</string>
+    <string name="b_ipaddress_check">Chequear IP</string>
+    <string name="title_activity_login">Inciar sesión</string>
+    <string name="prompt_email">Número de cédula</string>
+    <string name="prompt_password">Contraseña</string>
+    <string name="action_sign_in">Iniciar sesión</string>
+    <string name="action_sign_in_short">Iniciar sesión</string>
+    <string name="welcome">"Bienvenido !"</string>
+    <string name="invalid_username">Númerode cédula inválido o no encontrado</string>
+    <string name="invalid_password">La contraseña debe tener más de 5 caracteres</string>
+    <string name="login_failed">"Inicio de sesión fallido"</string>
+    <string name="login_string">"Ingrese los datos necesarios para iniciar sesión en su cuenta"</string>
+</resources>
