@@ -1,5 +1,6 @@
 package com.tec.tecbox;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -8,6 +9,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.tec.tecbox.ui.login.LoginActivity;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -66,9 +69,12 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            String c = "CONEXIÓN EXITOSA CON " + ip_address.getText().toString().trim();
+                            String c = "CONEXIÓN EXITOSA CON " + url;
                             Toast.makeText(MainActivity.this, c, Toast.LENGTH_LONG).show();
-                            //TODO: Cmabiar a actividad de inicio de sesión.
+                            finish();
+                            Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                            i.putExtra("url", "https://" + url + "/");
+                            MainActivity.this.startActivity(i);
                         }
                     });
                 } else {
