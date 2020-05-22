@@ -3,6 +3,7 @@ package com.tec.tecbox;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -10,8 +11,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.tec.tecbox.data.Client;
 import com.tec.tecbox.data.model.JsonInterface;
 import com.tec.tecbox.data.model.JsonPlaceHolder;
+import com.tec.tecbox.data.model.Responser;
+import com.tec.tecbox.data.model.ResponserHandler;
+import com.tec.tecbox.ui.login.LoginActivity;
+
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,13 +28,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainMenu extends AppCompatActivity {
 
-    Button search;
     Button entregado;
     Button fallido;
     Button devuelto;
     EditText tracker;
-    TextView estado;
-    String ip;
 
     private static Retrofit retrofit = null;
 
@@ -36,40 +40,53 @@ public class MainMenu extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        search = findViewById(R.id.bt_search);
         entregado = findViewById(R.id.bt_entregado);
         fallido = findViewById(R.id.bt_fallido);
         devuelto = findViewById(R.id.bt_sucursal);
         tracker = findViewById(R.id.et_trackerID);
-        estado = findViewById(R.id.estadopaq);
 
 
+        entregado.setOnClickListener(v -> {
+            connectApi(6);
+        });
 
-        connectApi();
+        fallido.setOnClickListener(v -> {
+            connectApi(7);
+        });
+
+        devuelto.setOnClickListener(v -> {
+            connectApi(8);
+        });
     }
 
-    private void connectApi() {
+    private void connectApi(int state) {
 
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl("https://jsonplaceholder.typicode.com/")
+                    .baseUrl("https://" + LoginActivity.ip + "/")
                     .addConverterFactory(GsonConverterFactory.create())
+                    .client(Client.getUnsafeOkHttpClient())
                     .build();
         }
 
-        JsonInterface json = retrofit.create(JsonInterface.class);
+        Responser json = retrofit.create(Responser.class);
 
-        Call<JsonPlaceHolder> call = json.getInfo();
+        ResponserHandler r = new ResponserHandler(Integer.parseInt(tracker.getText().toString().trim()), Integer.parseInt(Objects.requireNonNull(MainMenu
+                .this
+                .getIntent()
+                .getStringExtra("cedula"))), state);
 
-        call.enqueue(new Callback<JsonPlaceHolder>() {
+        Call<ResponserHandler> call = json.setPaqState(r);
+
+        call.enqueue(new Callback<ResponserHandler>() {
             @Override
-            public void onResponse(Call<JsonPlaceHolder> call, Response<JsonPlaceHolder> response) {
-                estado.setText(String.valueOf(response.body().isCompleted()));
+            public void onResponse(Call<ResponserHandler> call, Response<ResponserHandler> response) {
+                Toast.makeText(MainMenu.this, "Paquete marcado", Toast.LENGTH_LONG).show();
             }
 
             @Override
-            public void onFailure(Call<JsonPlaceHolder> call, Throwable t) {
-                estado.setText(t.toString());
+            public void onFailure(Call<ResponserHandler> call, Throwable t) {
+                Toast.makeText(MainMenu.this, "Error de conexión, no se pudo marcar el paquete", Toast.LENGTH_LONG).show();
             }
         });
 

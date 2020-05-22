@@ -11,12 +11,14 @@ import com.tec.tecbox.data.model.LoggedInUser;
 import com.tec.tecbox.ui.login.LoginActivity;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import com.tec.tecbox.data.Client;
 
 /**
  * Class that handles authentication w/ login credentials and retrieves user information.
@@ -25,58 +27,32 @@ public class LoginDataSource {
 
     public Result<LoggedInUser> login(String username, String password) {
 
-        /*Retrofit r = new Retrofit.Builder()
-                .baseUrl(LoginActivity.url)
+        String joe = "NOBODY";
+        String key = "";
+        String url = "https://192.168.137.155:45455/";
+
+        Retrofit r = new Retrofit.Builder()
+                .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(Client.getUnsafeOkHttpClient())
                 .build();
 
         AuthInterface i = r.create(AuthInterface.class);
 
-        AuthHandler h = new AuthHandler();
-        h.setCedula(402410587);
-        h.setPass("fioahbwfb34");
-        h.setType(1);
+        AuthHandler h = new AuthHandler(2, Integer.parseInt(username.trim()), password);
 
         Call<AuthHandler> call = i.makeAuth(h);
 
-        call.enqueue(new Callback<AuthHandler>() {
-            @Override
-            public void onResponse(Call<AuthHandler> call, Response<AuthHandler> response) {
-                Log.d("TESTING SHIT", response.message());
-            }
+        try {
+            AuthHandler response = call.execute().body();
+            key = response != null ? response.getKey() : "";
+            joe = response != null ? response.getNombre() : "NOBODY";
 
-            @Override
-            public void onFailure(Call<AuthHandler> call, Throwable t) {
-                Log.d("TESTING SHIT", t.toString());
-            }
-        });*/
+        } catch (IOException e) {
+           return new Result.Error(new IOException("No se pudo conectar", e));
+        }
 
-        Retrofit retrofit = null;
-
-        retrofit = new Retrofit.Builder()
-                .baseUrl("https://" + password + "/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        JsonInterface json = retrofit.create(JsonInterface.class);
-
-        Call<JsonPlaceHolder> call = json.getInfo();
-
-        final String[] joe = {"NOBODY"};
-
-        call.enqueue(new Callback<JsonPlaceHolder>() {
-            @Override
-            public void onResponse(Call<JsonPlaceHolder> call, Response<JsonPlaceHolder> response) {
-                joe[0] = response.message();
-            }
-
-            @Override
-            public void onFailure(Call<JsonPlaceHolder> call, Throwable t) {
-                joe[0] = t.toString();
-            }
-        });
-
-        return new Result.Success<>(new LoggedInUser("fayfkubwf", joe[0]));
+        return new Result.Success<>(new LoggedInUser(key, joe));
     }
 
     public void logout() {

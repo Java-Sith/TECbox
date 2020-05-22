@@ -32,8 +32,10 @@ import com.tec.tecbox.ui.login.LoginViewModelFactory;
 public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
-    public static String url = null;
     private TextView tx;
+    EditText usernameEditText;
+    EditText server;
+    public static String ip = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,28 +45,31 @@ public class LoginActivity extends AppCompatActivity {
                 .get(LoginViewModel.class);
 
         tx = findViewById(R.id.textView);
+        server = findViewById(R.id.server);
 
-        final EditText usernameEditText = findViewById(R.id.username);
-        final EditText passwordEditText = findViewById(R.id.password);
-        final Button loginButton = findViewById(R.id.login);
-        final ProgressBar loadingProgressBar = findViewById(R.id.loading);
-
-        TextWatcher watcher = new TextWatcher() {
+        TextWatcher t = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // ignore
+
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // ignore
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                ip = s.toString().trim();
             }
         };
+
+        server.addTextChangedListener(t);
+
+        usernameEditText = findViewById(R.id.username);
+        final EditText passwordEditText = findViewById(R.id.password);
+        final Button loginButton = findViewById(R.id.login);
+        final ProgressBar loadingProgressBar = findViewById(R.id.loading);
 
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
             @Override
@@ -98,7 +103,6 @@ public class LoginActivity extends AppCompatActivity {
                 setResult(Activity.RESULT_OK);
 
                 //Complete and destroy login activity once successful
-                //finish();
             }
         });
 
@@ -137,8 +141,20 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loadingProgressBar.setVisibility(View.VISIBLE);
-                loginViewModel.login(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
+
+                Toast.makeText(LoginActivity.this, "Servidor: " + ip, Toast.LENGTH_SHORT).show();
+
+                Thread t = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        loginViewModel.login(usernameEditText.getText().toString(),
+                                passwordEditText.getText().toString());
+
+
+                    }
+                });
+                t.start();
+
             }
         });
     }
@@ -149,10 +165,11 @@ public class LoginActivity extends AppCompatActivity {
         // TODO : initiate successful logged in experience
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
 
+        Intent i = new Intent(LoginActivity.this, MainMenu.class);
+        i.putExtra("cedula", usernameEditText.getText().toString().trim());
+        LoginActivity.this.startActivity(i);
 
-
-        /*Intent i = new Intent(LoginActivity.this, MainMenu.class);
-        LoginActivity.this.startActivity(i);*/
+        finish();
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {

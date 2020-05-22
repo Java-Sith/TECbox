@@ -13,6 +13,34 @@ public class AuthHandler {
     @SerializedName("pass")
     private String pass;
 
+    @SerializedName("nombre")
+    private String nombre;
+
+    @SerializedName("key")
+    private String key;
+
+    public AuthHandler(int type, int cedula, String pass) {
+        this.type = type;
+        this.cedula = cedula;
+        this.pass = pass;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
     public int getCedula() {
         return cedula;
     }

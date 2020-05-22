@@ -6,7 +6,7 @@ import retrofit2.http.POST;
 
 public interface AuthInterface {
 
-    @POST("autenticacion")
+    @POST("api/auth")
     Call<AuthHandler> makeAuth(@Body AuthHandler auth);
 
 }
