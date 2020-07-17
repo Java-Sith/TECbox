@@ -14,7 +14,7 @@ public class ResponserHandler {
     private int estado;
 
     @SerializedName("result")
-    private int result;
+    private String result;
 
     public ResponserHandler(int id, int repartidor, int estado) {
         this.id = id;
@@ -22,11 +22,11 @@ public class ResponserHandler {
         this.estado = estado;
     }
 
-    public int getResult() {
+    public String getResult() {
         return result;
     }
 
-    public void setResult(int result) {
+    public void setResult(String result) {
         this.result = result;
     }
 

@@ -81,12 +81,13 @@ public class MainMenu extends AppCompatActivity {
         call.enqueue(new Callback<ResponserHandler>() {
             @Override
             public void onResponse(Call<ResponserHandler> call, Response<ResponserHandler> response) {
-                Toast.makeText(MainMenu.this, "Paquete marcado", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainMenu.this, response.body().getResult(), Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onFailure(Call<ResponserHandler> call, Throwable t) {
-                Toast.makeText(MainMenu.this, "Error de conexión, no se pudo marcar el paquete", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainMenu.this, t.getMessage(), Toast.LENGTH_LONG).show();
+
             }
         });
 

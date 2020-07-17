@@ -31,7 +31,9 @@ public class LoginDataSource {
         String key = "";
         String url = "https://192.168.137.155:45455/";
 
-        Retrofit r = new Retrofit.Builder()
+        return new Result.Success<>(new LoggedInUser(key, joe));
+
+        /*Retrofit r = new Retrofit.Builder()
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(Client.getUnsafeOkHttpClient())
@@ -52,7 +54,7 @@ public class LoginDataSource {
            return new Result.Error(new IOException("No se pudo conectar", e));
         }
 
-        return new Result.Success<>(new LoggedInUser(key, joe));
+        return new Result.Success<>(new LoggedInUser(key, joe));*/
     }
 
     public void logout() {

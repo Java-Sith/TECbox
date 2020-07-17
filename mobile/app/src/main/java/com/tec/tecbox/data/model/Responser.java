@@ -6,6 +6,6 @@ import retrofit2.http.POST;
 
 public interface Responser {
 
-    @POST("api/repartidor")
+    @POST("Repartidor")
     Call<ResponserHandler> setPaqState(@Body ResponserHandler state);
 }
